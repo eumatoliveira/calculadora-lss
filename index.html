@@ -1,0 +1,609 @@
+<!-- Chosen Palette: Professional Trust (White, Slate-900, Emerald-600 for profit, Blue-600 for tech) -->
+<!-- Application Structure Plan: Landing Page de Alta Conversão. 1. Hero: Promessa de valor. 2. Simulador Educativo: Inputs com guias "Como calcular" para educar o cliente sobre seus próprios desperdícios. 3. A Jornada LSS 4.0 (Deep Dive): Seção expandida explicando EHR, Lean Flow, AI/LTV e Control Plan com foco em benefício. 4. Diagnóstico: Radar. 5. CTA. -->
+<!-- Visualization & Content Choices: 1. Simulador: Inputs interativos com "Helpers" de texto (JS Tooltips logic). 2. Jornada (Stack): Layout de "Steps" ou "Cards Expandidos" para explicar Lean Flow e AI sem textão. 3. Gráficos: Mantidos (Projeção e Radar) pois são eficazes. 4. CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSS 4.0: Maximize o Valor da sua Clínica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            max-height: 400px;
+        }
+        /* Custom Range Input Styling */
+        input[type=range] {
+            height: 6px; 
+            border-radius: 5px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            margin-top: -7px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .step-card {
+            transition: all 0.3s ease;
+        }
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .info-tooltip {
+            display: none;
+        }
+        .has-tooltip:hover .info-tooltip {
+            display: block;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0f172a',   // Slate 900
+                            primary: '#2563eb', // Blue 600
+                            secondary: '#3b82f6', // Blue 500
+                            accent: '#059669',  // Emerald 600
+                            light: '#f8fafc',   // Slate 50
+                            gray: '#64748b'     // Slate 500
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-light text-brand-dark antialiased selection:bg-brand-primary selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+        <div class="container mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-bold tracking-tight text-brand-primary">LSS 4.0</span>
+                <span class="text-xl font-light text-brand-dark">Health Solutions</span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#simulador" class="text-sm font-medium text-brand-gray hover:text-brand-primary transition-colors">Simulador</a>
+                <a href="#como-funciona" class="text-sm font-medium text-brand-gray hover:text-brand-primary transition-colors">Metodologia</a>
+                <a href="#diagnostico" class="text-sm font-medium text-brand-gray hover:text-brand-primary transition-colors">Diagnóstico</a>
+            </div>
+            <button onclick="document.getElementById('simulador').scrollIntoView({behavior: 'smooth'})" class="bg-brand-primary text-white px-6 py-2.5 rounded-full font-semibold hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-500/30 text-sm">
+                Calcular ROI
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative overflow-hidden pt-20 pb-24 lg:pt-28 lg:pb-36 bg-white">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-blue-50 text-brand-primary font-semibold text-sm border border-blue-100 shadow-sm">
+                <span class="relative flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                </span>
+                Estratégia DDMLAICE & Excelência Operacional
+            </div>
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-brand-dark mb-8 max-w-5xl mx-auto leading-tight">
+                Pare de gerir sua clínica pela <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-600">intuição.</span>
+            </h1>
+            <p class="text-xl text-brand-gray mb-12 max-w-3xl mx-auto leading-relaxed">
+                Descubra exatamente onde estão seus gargalos financeiros e operacionais. Nossa metodologia LSS 4.0 integra dados, processos Lean e IA para garantir lucro previsível.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#simulador" class="px-8 py-4 bg-brand-primary text-white rounded-lg font-bold text-lg shadow-xl hover:bg-blue-700 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                    <span>🔢</span> Simular Lucro Real
+                </a>
+                <a href="#como-funciona" class="px-8 py-4 bg-white text-brand-dark border border-gray-200 rounded-lg font-bold text-lg hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
+                    <span>💡</span> Entender a Metodologia
+                </a>
+            </div>
+        </div>
+        <!-- Background Patterns -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 opacity-40">
+            <div class="absolute -top-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-gradient-to-br from-blue-200 to-transparent blur-3xl"></div>
+            <div class="absolute bottom-[10%] -left-[10%] w-[30%] h-[30%] rounded-full bg-gradient-to-tr from-emerald-200 to-transparent blur-3xl"></div>
+        </div>
+    </header>
+
+    <!-- Section 2: The Simulator (Educational & Value Focused) -->
+    <section id="simulador" class="py-24 bg-brand-light border-y border-gray-200">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+                
+                <!-- Input Column -->
+                <div class="space-y-10">
+                    <div>
+                        <h2 class="text-3xl font-bold text-brand-dark mb-4">Calculadora de Potencial Oculto</h2>
+                        <p class="text-brand-gray text-lg">Ajuste os controles abaixo com base na realidade atual da sua clínica. Veja instantaneamente o impacto financeiro da metodologia.</p>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-2xl border border-gray-200 shadow-sm space-y-8 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-2 h-full bg-brand-primary"></div>
+                        
+                        <!-- Faturamento -->
+                        <div>
+                            <div class="flex justify-between items-end mb-2">
+                                <label class="text-sm font-bold text-brand-dark uppercase tracking-wider">Faturamento Mensal</label>
+                                <span id="faturamentoVal" class="text-2xl font-bold text-brand-primary">R$ 150.000</span>
+                            </div>
+                            <input type="range" id="faturamento" min="20000" max="500000" step="5000" value="150000" class="w-full bg-gray-200 rounded-lg appearance-none cursor-pointer mb-3">
+                            <div class="bg-blue-50 p-3 rounded-md border border-blue-100 text-xs text-blue-800 flex gap-2 items-start">
+                                <span class="text-lg">ℹ️</span>
+                                <p>Considere a média bruta dos últimos 3 meses (Consultas + Procedimentos + Exames).</p>
+                            </div>
+                        </div>
+
+                        <!-- Desperdício -->
+                        <div>
+                            <div class="flex justify-between items-end mb-2">
+                                <label class="text-sm font-bold text-brand-dark uppercase tracking-wider">Desperdício Operacional</label>
+                                <span id="desperdicioVal" class="text-2xl font-bold text-red-500">15%</span>
+                            </div>
+                            <input type="range" id="desperdicio" min="0" max="40" step="1" value="15" class="w-full bg-gray-200 rounded-lg appearance-none cursor-pointer accent-red-500 mb-3">
+                            <div class="bg-red-50 p-3 rounded-md border border-red-100 text-xs text-red-800 flex gap-2 items-start">
+                                <span class="text-lg">⚠️</span>
+                                <div>
+                                    <p class="font-semibold mb-1">Como estimar?</p>
+                                    <p>Soma aproximada de: Taxa de No-Show + Glosas de Convênio + Horários vagos na agenda + Retrabalho administrativo.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Margem -->
+                        <div>
+                            <div class="flex justify-between items-end mb-2">
+                                <label class="text-sm font-bold text-brand-dark uppercase tracking-wider">Margem Líquida Atual</label>
+                                <span id="margemVal" class="text-2xl font-bold text-brand-dark">10%</span>
+                            </div>
+                            <input type="range" id="margem" min="0" max="40" step="1" value="10" class="w-full bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-dark mb-3">
+                            <p class="text-xs text-gray-500">Quanto sobra no caixa após pagar todos os custos fixos, variáveis e impostos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result Column -->
+                <div class="relative lg:sticky lg:top-28">
+                    <!-- Cards de Resultado -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                        <div class="value-card bg-brand-dark text-white p-6 rounded-xl shadow-xl border-b-4 border-brand-accent relative overflow-hidden group">
+                            <div class="absolute -right-6 -top-6 bg-white/10 w-24 h-24 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                            <p class="text-sm text-gray-400 mb-2 font-medium uppercase tracking-wide">Dinheiro "Na Mesa" (Anual)</p>
+                            <p id="economiaAnual" class="text-3xl md:text-4xl font-bold text-brand-accent tracking-tight">R$ 0,00</p>
+                            <p class="text-xs text-gray-400 mt-3">Valor recuperável com LSS 4.0</p>
+                        </div>
+                        <div class="value-card bg-white border border-gray-200 p-6 rounded-xl shadow-md relative overflow-hidden">
+                            <p class="text-sm text-gray-500 mb-2 font-medium uppercase tracking-wide">Nova Margem Projetada</p>
+                            <p id="novaMargem" class="text-4xl font-bold text-brand-primary tracking-tight">0%</p>
+                            <div class="mt-3 flex items-center gap-2 text-xs text-emerald-600 font-semibold bg-emerald-50 px-2 py-1 rounded-full w-fit">
+                                <span>🚀</span> Crescimento Otimizado
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Projection -->
+                    <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-lg">
+                        <div class="flex justify-between items-center mb-6">
+                            <h4 class="text-base font-bold text-brand-dark">Projeção de Lucro Acumulado (12 Meses)</h4>
+                            <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">Cenário Otimizado</span>
+                        </div>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="projectionChart"></canvas>
+                        </div>
+                        <div class="mt-4 flex items-center justify-center gap-6 text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-gray-400"></span>
+                                <span class="text-gray-500">Operação Atual</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                                <span class="text-gray-700 font-semibold">Operação LSS 4.0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: The Detailed Methodology (Explaining the "How") -->
+    <section id="como-funciona" class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-dark mb-4">A Ciência por trás do Lucro</h2>
+                <p class="text-brand-gray text-lg">Não é mágica, é engenharia de processos. Entenda como o <strong>DDMLAICE</strong> transforma sua clínica passo a passo.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 relative">
+                <!-- Connecting Line (Desktop) -->
+                <div class="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-gray-100 -translate-x-1/2 z-0"></div>
+
+                <!-- Step 1: Define & Measure -->
+                <div class="step-card bg-white p-8 rounded-2xl border border-gray-100 shadow-lg relative z-10">
+                    <div class="w-12 h-12 bg-blue-100 text-brand-primary rounded-xl flex items-center justify-center text-2xl font-bold mb-6">1</div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-3">Coleta de Dados (EHR & CRM)</h3>
+                    <p class="text-sm font-semibold text-brand-primary mb-4 uppercase tracking-wide">Fase: Define & Measure</p>
+                    <p class="text-brand-gray mb-4 leading-relaxed">
+                        Esqueça as planilhas manuais. Nós integramos diretamente com seu Prontuário Eletrônico (ex: Tebra, Kareo) e CRM.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-500">✓</span>
+                            <span>Mapeamento automático de tempos de espera.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-500">✓</span>
+                            <span>Identificação de gargalos na jornada do paciente.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-500">✓</span>
+                            <span>Auditoria de dados financeiros na fonte.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Step 2: Lean Flow -->
+                <div class="step-card bg-white p-8 rounded-2xl border border-gray-100 shadow-lg relative z-10 md:mt-12">
+                    <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-2xl font-bold mb-6">2</div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-3">Lean Flow (Limpeza de Processos)</h3>
+                    <p class="text-sm font-semibold text-indigo-600 mb-4 uppercase tracking-wide">Fase: Lean Organization</p>
+                    <p class="text-brand-gray mb-4 leading-relaxed">
+                        Antes de automatizar, nós limpamos a "sujeira". Eliminamos etapas que não agregam valor ao paciente (Desperdício/Muda).
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-500">✓</span>
+                            <span>Redesenho do fluxo físico e digital.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-500">✓</span>
+                            <span>Padronização de atendimento (SOPs digitais).</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-500">✓</span>
+                            <span>Redução de redundâncias administrativas.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Step 3: AI & Analytics -->
+                <div class="step-card bg-white p-8 rounded-2xl border border-gray-100 shadow-lg relative z-10">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-2xl font-bold mb-6">3</div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-3">Inteligência Artificial & LTV</h3>
+                    <p class="text-sm font-semibold text-purple-600 mb-4 uppercase tracking-wide">Fase: Improve & Predict</p>
+                    <p class="text-brand-gray mb-4 leading-relaxed">
+                        Com processos limpos, aplicamos IA para prever o futuro. Calculamos o <strong>LTV (Lifetime Value)</strong> de cada paciente.
+                    </p>
+                    <div class="bg-purple-50 p-4 rounded-lg border border-purple-100 text-sm">
+                        <p class="font-bold text-purple-800 mb-2">O que isso significa?</p>
+                        <p class="text-purple-700">Sabemos quais pacientes trarão maior lucro a longo prazo e quais têm risco de abandonar o tratamento (Churn), permitindo ações preventivas automáticas.</p>
+                    </div>
+                </div>
+
+                <!-- Step 4: Control Plan -->
+                <div class="step-card bg-white p-8 rounded-2xl border border-gray-100 shadow-lg relative z-10 md:mt-12">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-2xl font-bold mb-6">4</div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-3">Dashboards de Controle (Torre de Controle)</h3>
+                    <p class="text-sm font-semibold text-emerald-600 mb-4 uppercase tracking-wide">Fase: Control & Sustain</p>
+                    <p class="text-brand-gray mb-4 leading-relaxed">
+                        A eficiência não pode cair quando viramos as costas. Instalamos painéis de BI que monitoram sua clínica 24/7.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-500">✓</span>
+                            <span>Alertas em tempo real de queda de performance.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-500">✓</span>
+                            <span>Visão clara de CAC (Custo de Aquisição) vs LTV.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-emerald-500">✓</span>
+                            <span>Garantia de que o lucro se mantém estável.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Diagnosis (Radar Chart) -->
+    <section id="diagnostico" class="py-24 bg-brand-light border-t border-gray-200">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-brand-dark mb-6">O Salto de Maturidade</h2>
+                    <p class="text-brand-gray text-lg mb-8">Veja a diferença visual entre uma clínica tradicional (reativa) e uma clínica LSS 4.0 (preditiva e eficiente).</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-white border border-gray-200 flex items-center justify-center shadow-sm text-xl">📉</div>
+                            <div>
+                                <h4 class="font-bold text-brand-dark">Antes: Apagando Incêndios</h4>
+                                <p class="text-sm text-gray-600">Altas taxas de glosa, espera longa, marketing sem medir retorno.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-brand-primary text-white flex items-center justify-center shadow-md text-xl">📈</div>
+                            <div>
+                                <h4 class="font-bold text-brand-dark">Depois: Crescimento Previsível</h4>
+                                <p class="text-sm text-gray-600">Processos fluídos, equipe engajada, pacientes fiéis (Alto LTV).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="chart-container">
+                        <canvas id="radarComparison"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 bg-brand-dark text-white relative overflow-hidden">
+        <!-- Background Glow -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-4xl bg-blue-900/30 blur-3xl -z-0 rounded-full pointer-events-none"></div>
+
+        <div class="container mx-auto px-6 max-w-4xl text-center relative z-10">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 tracking-tight">Pronto para recuperar sua margem?</h2>
+            <p class="text-gray-300 text-xl mb-12">A tecnologia LSS 4.0 se paga em média nos primeiros 4 meses. Não deixe mais dinheiro na mesa.</p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button class="bg-brand-primary hover:bg-blue-600 text-white px-10 py-5 rounded-xl font-bold text-xl shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-1 transition-all">
+                    Agendar Diagnóstico Gratuito
+                </button>
+            </div>
+            <p class="mt-8 text-sm text-gray-500">Vagas limitadas para implementação este mês.</p>
+        </div>
+    </section>
+
+    <footer class="bg-black text-gray-500 py-12 border-t border-gray-900">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0 text-center md:text-left">
+                <span class="text-2xl font-bold text-white tracking-tight">LSS 4.0</span>
+                <p class="text-sm mt-2">Inteligência de Dados para Clínicas e Healthtechs.</p>
+            </div>
+            <div class="text-sm text-center md:text-right">
+                <p>&copy; 2025 LSS Health Solutions. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Formatter ---
+        const formatBRL = (value) => {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(value);
+        };
+
+        // --- Simulator Logic ---
+        const faturamentoInput = document.getElementById('faturamento');
+        const desperdicioInput = document.getElementById('desperdicio');
+        const margemInput = document.getElementById('margem');
+        
+        const faturamentoVal = document.getElementById('faturamentoVal');
+        const desperdicioVal = document.getElementById('desperdicioVal');
+        const margemVal = document.getElementById('margemVal');
+        
+        const economiaAnualEl = document.getElementById('economiaAnual');
+        const novaMargemEl = document.getElementById('novaMargem');
+
+        let projectionChart = null;
+
+        function updateSimulator() {
+            const faturamento = parseFloat(faturamentoInput.value);
+            const desperdicioPct = parseFloat(desperdicioInput.value) / 100;
+            const margemAtualPct = parseFloat(margemInput.value) / 100;
+
+            // Update UI Labels
+            faturamentoVal.textContent = formatBRL(faturamento);
+            desperdicioVal.textContent = `${(desperdicioPct * 100).toFixed(0)}%`;
+            margemVal.textContent = `${(margemAtualPct * 100).toFixed(0)}%`;
+
+            // Calculations
+            // LSS Impact: Recover 60% of waste (Conservative estimate for calculator)
+            const desperdicioMonetarioMensal = faturamento * desperdicioPct;
+            const economiaMensal = desperdicioMonetarioMensal * 0.60; 
+            const economiaAnual = economiaMensal * 12;
+
+            const lucroAtualMensal = faturamento * margemAtualPct;
+            const lucroNovoMensal = lucroAtualMensal + economiaMensal;
+            const novaMargemPct = (lucroNovoMensal / faturamento) * 100;
+
+            // Animation for numbers
+            animateValue(economiaAnualEl, economiaAnual, formatBRL);
+            novaMargemEl.textContent = `${novaMargemPct.toFixed(1)}%`;
+
+            // Update Chart
+            updateProjectionChart(lucroAtualMensal, lucroNovoMensal);
+        }
+
+        function animateValue(obj, end, formatter) {
+            // Simple visual update, in prod use proper animation lib
+            obj.textContent = formatter(end);
+        }
+
+        function initProjectionChart() {
+            const ctx = document.getElementById('projectionChart').getContext('2d');
+            
+            const gradientCurrent = ctx.createLinearGradient(0, 0, 0, 300);
+            gradientCurrent.addColorStop(0, 'rgba(100, 116, 139, 0.1)');
+            gradientCurrent.addColorStop(1, 'rgba(100, 116, 139, 0)');
+
+            const gradientNew = ctx.createLinearGradient(0, 0, 0, 300);
+            gradientNew.addColorStop(0, 'rgba(5, 150, 105, 0.2)');
+            gradientNew.addColorStop(1, 'rgba(5, 150, 105, 0)');
+
+            projectionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mês 1', 'Mês 2', 'Mês 3', 'Mês 4', 'Mês 5', 'Mês 6', 'Mês 7', 'Mês 8', 'Mês 9', 'Mês 10', 'Mês 11', 'Mês 12'],
+                    datasets: [
+                        {
+                            label: 'Lucro Acumulado (Atual)',
+                            data: [],
+                            borderColor: '#94a3b8',
+                            backgroundColor: gradientCurrent,
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Lucro Acumulado (LSS 4.0)',
+                            data: [],
+                            borderColor: '#059669',
+                            backgroundColor: gradientNew,
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#059669',
+                            pointRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 12,
+                            titleFont: { family: 'Inter', size: 13 },
+                            bodyFont: { family: 'Inter', size: 13 },
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + formatBRL(context.raw);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) { return 'R$' + (value / 1000) + 'k'; },
+                                color: '#94a3b8',
+                                font: { family: 'Inter' }
+                            },
+                            grid: { color: '#f1f5f9' },
+                            border: { display: false }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: { color: '#94a3b8', font: { family: 'Inter' } },
+                            border: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateProjectionChart(lucroAtual, lucroNovo) {
+            const dataAtual = [];
+            const dataNovo = [];
+            let accAtual = 0;
+            let accNovo = 0;
+            
+            for (let i = 1; i <= 12; i++) {
+                accAtual += lucroAtual;
+                
+                // Ramp up: Month 1=10%, Month 6=100%
+                let factor = Math.min(1, i / 6); 
+                let ganhoMensalExtra = (lucroNovo - lucroAtual) * factor;
+                
+                accNovo += (lucroAtual + ganhoMensalExtra);
+
+                dataAtual.push(accAtual);
+                dataNovo.push(accNovo);
+            }
+
+            projectionChart.data.datasets[0].data = dataAtual;
+            projectionChart.data.datasets[1].data = dataNovo;
+            projectionChart.update();
+        }
+
+        // --- Radar Chart Logic ---
+        function initRadarChart() {
+            const ctx = document.getElementById('radarComparison').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Eficiência (TAT)', 'Satisfação (NPS)', 'Digitalização', 'Previsibilidade', 'Controle de Custos', 'Engajamento'],
+                    datasets: [
+                        {
+                            label: 'Clínica Tradicional',
+                            data: [40, 50, 30, 20, 45, 40],
+                            fill: true,
+                            backgroundColor: 'rgba(148, 163, 184, 0.2)',
+                            borderColor: '#94a3b8',
+                            pointBackgroundColor: '#94a3b8',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Clínica LSS 4.0',
+                            data: [90, 95, 100, 90, 85, 85],
+                            fill: true,
+                            backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                            borderColor: '#2563eb',
+                            pointBackgroundColor: '#2563eb',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e2e8f0' },
+                            grid: { color: '#e2e8f0' },
+                            pointLabels: {
+                                font: { size: 11, family: 'Inter', weight: '600' },
+                                color: '#475569'
+                            },
+                            ticks: { display: false, max: 100 }
+                        }
+                    },
+                    plugins: {
+                        legend: { 
+                            position: 'bottom',
+                            labels: { font: { family: 'Inter' }, usePointStyle: true }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            initProjectionChart();
+            initRadarChart();
+            updateSimulator();
+
+            [faturamentoInput, desperdicioInput, margemInput].forEach(input => {
+                input.addEventListener('input', updateSimulator);
+            });
+        });
+    </script>
+</body>
+</html>
